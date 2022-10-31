@@ -1,5 +1,5 @@
 #include "field.h"
-#include "../random.h"
+#include "random.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,6 +28,7 @@ void _cell_count_around(field_t* field, cell_t* cell) {
 			count++;
 		}
 	}
+	cell_set_state(cell, true, CELL_COUNTED);
 	cell_set_around(cell, count);
 	free(around);
 }
@@ -39,7 +40,7 @@ void _field_count_around(field_t* field) {
 	}
 }
 
-_field_place_mines(field_t* field, uint32_t start) {
+void _field_place_mines(field_t* field, uint32_t start) {
 	for (uint32_t i = 0; i < field->mines; i++) {
 		uint32_t index = random_generate(field->length - 1);
 		cell_t* cell = field->cells[index];

@@ -1,8 +1,8 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
-#include "logic/cell.h"
-#include "logic/field.h"
+#include "game/cell.h"
+#include "game/field.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -61,20 +61,24 @@ void _debug_print_status(field_t* field) {
 	putchar('\n');
 }
 
-void _debug_play_game(field_t* field) {
+void _debug_get_input(field_t* field) {
 	char c;
 	int x, y;
+	printf("f/o (x, y): ");
+	scanf("%c %d %d", &c, &x, &y);
+	cell_t* cell = field_get_cell(field, x, y);
+	if (c == 'f') {
+		field_flag_cell(field, cell);
+	} else {
+		field_open_cell(field, cell);
+	}
+}
+
+void _debug_play_game(field_t* field) {
 	for (;;) {
 		_debug_print_field(field);
 		_debug_print_status(field);
-		printf("f/o (x, y): ");
-		scanf("%c %d %d", &c, &x, &y);
-		cell_t* cell = field_get_cell(field, x, y);
-		if (c == 'f') {
-			field_flag_cell(field, cell);
-		} else {
-			field_open_cell(field, cell);
-		}
+		_debug_get_input(field);
 		putchar('\n');
 	} 
 }
