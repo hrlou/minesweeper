@@ -9,7 +9,7 @@ typedef enum uint8_t {
 	CELL_OPEN = 0x1,
 	CELL_MINE = 0x2,
 	CELL_FLAG = 0x4,
-	CELL_COUNTED = 0x8
+	CELL_SUPERPOSITION = 0x8
 } cell_state_e;
 
 typedef struct {
@@ -19,7 +19,8 @@ typedef struct {
 
 cell_t* cell_init(uint16_t, uint16_t);
 
-void cell_set_state(cell_t*, bool, cell_state_e);
+// void cell_set_state(cell_t*, bool, cell_state_e);
+bool cell_flip_state(cell_t*, cell_state_e);
 bool cell_get_state(cell_t*, cell_state_e);
 
 void cell_set_around(cell_t*, uint8_t);

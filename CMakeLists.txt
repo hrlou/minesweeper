@@ -1,4 +1,3 @@
-
 project(minesweeper)
 
 cmake_minimum_required(VERSION 3.7)
@@ -22,7 +21,7 @@ file(GLOB SOURCES "src/*.c")
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE src)
-target_link_libraries(${PROJECT_NAME} game SDL2 SDL2_IMAGE)
+target_link_libraries(${PROJECT_NAME} game SDL2 SDL2_IMAGE SDL2_TTF)
 
 install(TARGETS minesweeper DESTINATION ${MINESWEEPER_INSTALL_BIN_DIR})
 file(COPY assets DESTINATION ${MINESWEEPER_INSTALL_BIN_DIR})

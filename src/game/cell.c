@@ -10,12 +10,17 @@ cell_t* cell_init(uint16_t x, uint16_t y) {
 	return cell;
 }
 
-void cell_set_state(cell_t* cell, bool val, cell_state_e state) {
+/* void cell_set_state(cell_t* cell, bool val, cell_state_e state) {
 	if (val == true) {
 		cell->state |= state;
 	} else {
 		cell->state &= ~state;
 	}
+} */
+
+bool cell_flip_state(cell_t* cell, cell_state_e state) {
+	cell->state ^= state;
+	return !!(cell->state & state);
 }
 
 bool cell_get_state(cell_t* cell, cell_state_e state) {

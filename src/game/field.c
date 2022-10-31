@@ -15,6 +15,7 @@ void _field_cleanup_cells(field_t* field) {
 	for (uint32_t i = 0; i < field->length; i++) {
 		free(field->cells[i]);
 	}
+	field->last_cell = NULL;
 	free(field->cells);
 }
 
@@ -28,7 +29,6 @@ void _cell_count_around(field_t* field, cell_t* cell) {
 			count++;
 		}
 	}
-	cell_set_state(cell, true, CELL_COUNTED);
 	cell_set_around(cell, count);
 	free(around);
 }
@@ -47,7 +47,8 @@ void _field_place_mines(field_t* field, uint32_t start) {
 		if (index == start || cell_get_state(cell, CELL_MINE)) {
 			i--;
 		} else {
-			cell_set_state(cell, true, CELL_MINE);
+			// cell_set_state(cell, true, CELL_MINE);
+			cell_flip_state(cell, CELL_MINE);
 		}
 	}
 }
@@ -82,22 +83,22 @@ void field_start(field_t* field, uint16_t x, uint16_t y) {
 	if (field->has_started) {
 		field_reset(field);
 	}
+	field->has_started = true;
 	uint32_t index = FIELD_INDEX(field, x, y);
 	_field_place_mines(field, index);
 	_field_count_around(field);
-	field->has_started = true;
 	field_open_cell(field, field->cells[index]);
 }
 
 void field_open_cell(field_t* field, cell_t* cell) {
 	if (cell_get_state(cell, CELL_OPEN) || field_is_won(field) || field_is_failed(field)) {
-		// check iswon, isfailed
 		return;
 	} else if (!field->has_started) {
 		field_start(field, cell->x, cell->y);
 		return;
 	}
-	cell_set_state(cell, true, CELL_OPEN);
+	// cell_set_state(cell, true, CELL_OPEN);
+	cell_flip_state(cell, CELL_OPEN);
 	field->last_cell = cell;
 	field->cells_open++;
 	if (cell_get_state(cell, CELL_MINE) || cell_get_around(cell) > 0) {
@@ -113,14 +114,12 @@ void field_open_cell(field_t* field, cell_t* cell) {
 
 void field_flag_cell(field_t* field, cell_t* cell) {
 	if (cell_get_state(cell, CELL_OPEN) || field_is_won(field) || field_is_failed(field)) {
-		// check iswon, isfailed
 		return;
 	}
 	if (!cell_get_state(cell, CELL_FLAG) && field_flag_count(field) == 0) {
 		return;
 	}
-	cell_set_state(cell, true, CELL_FLAG);
-	field->cells_flagged++;
+	field->cells_flagged += cell_flip_state(cell, CELL_FLAG) ? 1 : -1;
 
 }
 
@@ -130,6 +129,9 @@ uint16_t field_flag_count(field_t* field) {
 
 cell_t* field_get_cell(field_t* field, uint16_t x, uint16_t y) {
 	uint32_t index = FIELD_INDEX(field, x, y);
+	if (x > field->width || y > field->height) {
+		return NULL;
+	}
 	return field->cells[index];
 }
 
@@ -176,6 +178,7 @@ bool field_is_failed(field_t* field) {
 			return true;
 		}
 	}
+	return false;
 }
 
 
