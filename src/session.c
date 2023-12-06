@@ -8,7 +8,6 @@ session_t* g_s;
 
 // FOR TESTING ONLY
 sprite_t* g_cell_sprite;
-sprite_t* g_ocean;	
 
 #define CELL_SIZE 64
 
@@ -106,8 +105,7 @@ void session_init() {
 	g_s->renderer = SDL_CreateRenderer(g_s->window, -1, SDL_RENDERER_ACCELERATED);
 	SDL_Init(SDL_INIT_VIDEO);
 
-	g_cell_sprite = sprite_init("assets/sprite/tiles.png", 1, 16);
-	g_ocean = sprite_init("assets/img/ocean.png", 1, 1);
+	g_cell_sprite = sprite_init("./assets/sprite/tiles.png", 1, 16);
 }
 
 void session_input() {
@@ -132,7 +130,6 @@ void session_draw() {
 	_session_draw_field();
 	SDL_Rect pos;
 	pos.w = 500; pos.h = 500; pos.x = 650; pos.y = 220;
-	sprite_draw(g_ocean, &pos, 0, 0);
 
 	SDL_SetRenderDrawColor(g_s->renderer, 98, 98, 98, 255);
 	SDL_RenderPresent(g_s->renderer);
