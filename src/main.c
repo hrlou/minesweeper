@@ -16,6 +16,6 @@ int main(int argc, char* argv[]) {
 	session_create(field, "Minesweeper", 1280, 720);
 	session_init();
 	session_loop();
-	// session_cleanup();
+	session_cleanup();
 	return 0;
 }

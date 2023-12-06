@@ -12,6 +12,7 @@ sprite_t* sprite_init(const char* path, uint8_t rows, uint8_t columns) {
 	s->clip.w /= rows;
 	s->clip.h /= columns;
 	// printf("%d, %d\n", s->clip.w, s->clip.h);
+	return s;
 }
 
 void sprite_draw(sprite_t* s, SDL_Rect* pos, uint8_t x, uint8_t y) {
