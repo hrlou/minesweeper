@@ -7,9 +7,6 @@ project(minesweeper)
 
 cmake_minimum_required(VERSION 3.7)
 
-# set(SDL2_DIR C:/src/vcpkg/installed/x64-windows/share/sdl2)
-# set(SDL2-image_DIR C:/src/vcpkg/installed/x64-windows/share/sdl2-image)
-
 find_package(SDL2 CONFIG REQUIRED)
 find_package(SDL2_image CONFIG REQUIRED)
 
@@ -25,7 +22,6 @@ include_directories(${SDL2_INCLUDE_DIRS})
 
 add_subdirectory(src/game)
 
-# file(GLOB SOURCE_FILES "src/*.c")
 set(SOURCE_FILES 
     "src/main.c"
     "src/event.c"
@@ -38,6 +34,10 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
         "src/debug.c"
     )
 endif()
+
+foreach(file ${SOURCE_FILES})
+    message(STATUS "Compiling: ${file}")
+endforeach()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} PRIVATE src)
