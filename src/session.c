@@ -5,11 +5,16 @@
 #include <stdlib.h>
 
 session_t* g_s;
+sprite_t* g_cell_sprite; // FOR TESTING ONLY
+uint16_t g_cell_size = 0; // Defines the pixel size of a tile on the board
 
-// FOR TESTING ONLY
-sprite_t* g_cell_sprite;
-
-#define CELL_SIZE 64
+void _session_calculate_cell_size(void) {
+	if (g_cell_size == 0) {
+		uint16_t size_by_width = g_s->width / g_s->field->width;
+		uint16_t size_by_height = g_s->height / g_s->field->height;
+		g_cell_size = size_by_width < size_by_height ? size_by_width : size_by_height;
+	}
+}
 
 void _session_draw_cell(cell_t* cell, uint16_t w, uint16_t h) {
 	SDL_Rect pos;
@@ -32,7 +37,6 @@ void _session_draw_cell(cell_t* cell, uint16_t w, uint16_t h) {
 
 	pos.w = w; pos.h = h; pos.x = w * cell->x; pos.y = h * cell->y;
 	sprite_draw(g_cell_sprite, &pos, 0, serial);
-
 }
 
 void _session_draw_field() {
@@ -40,14 +44,10 @@ void _session_draw_field() {
 	for (uint16_t y = 0; y < field->height; y++) {
 		for (uint16_t x = 0; x < field->width; x++) {
 			cell_t* cell = field_get_cell(field, x, y);
-			_session_draw_cell(cell, CELL_SIZE, CELL_SIZE);
+			_session_draw_cell(cell, g_cell_size, g_cell_size);
 		}
 	}
 }
-
-// cell_t* _session_get_cell(uint32_t x, uint32_t y) {
-	// return ;
-// }
 
 void _session_handle_field(SDL_MouseButtonEvent* e, uint16_t x, uint16_t y) {
 	field_t* field = g_s->field;
@@ -76,8 +76,8 @@ void _session_handle_field(SDL_MouseButtonEvent* e, uint16_t x, uint16_t y) {
 
 void _session_handle_mouse(SDL_MouseButtonEvent* e) {
 	field_t* field = g_s->field;
-	uint16_t x = e->x / CELL_SIZE;
-	uint16_t y = e->y / CELL_SIZE;
+	uint16_t x = e->x / g_cell_size;
+	uint16_t y = e->y / g_cell_size;
 	if (x > field->width || y > field->height) {
 		if (e->button == SDL_BUTTON_LEFT && e->state == SDL_RELEASED) {
 			field_reset(field);
@@ -101,6 +101,7 @@ void session_create(field_t* field, const char* name, uint32_t width, uint32_t h
 
 
 void session_init() {
+	_session_calculate_cell_size();
 	g_s->window = SDL_CreateWindow("Minesweeper", 100, 100, g_s->width, g_s->height, SDL_WINDOW_OPENGL);
 	g_s->renderer = SDL_CreateRenderer(g_s->window, -1, SDL_RENDERER_ACCELERATED);
 	SDL_Init(SDL_INIT_VIDEO);
@@ -118,6 +119,10 @@ void session_input() {
 			// printf("Gaming");
 			_session_handle_mouse(&e.button);
 
+		} else if (e.type == SDL_KEYDOWN) {
+			if (e.key.keysym.sym == SDLK_r) {
+				field_reset(g_s->field);
+			}
 		}
 	}
 	g_s->event.type = EVENT_CONTINUE;

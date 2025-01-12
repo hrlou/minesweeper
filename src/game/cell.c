@@ -2,24 +2,14 @@
 
 #include <stdlib.h>
 
-// Function to initialize a new cell with given x and y coordinates
+// Initialise a new cell with at given (x, y) coordinates
 cell_t* cell_init(uint16_t x, uint16_t y) {
-	// Allocate memory for the new cell and set its coordinates and initial state to 0
 	cell_t* cell = calloc(1, sizeof(cell_t));
 	cell->x = x;
 	cell->y = y;
 	cell->state = 0;  // Default state is 0 (no flags, not open, not a mine)
 	return cell;
 }
-
-/* 
-void cell_set_state(cell_t* cell, bool val, cell_state_e state) {
-	if (val == true) {
-		cell->state |= state;  
-	} else {
-		cell->state &= ~state;
-	}
-} */
 
 // Flip the state of a specific cell
 bool cell_flip_state(cell_t* cell, cell_state_e state) {
